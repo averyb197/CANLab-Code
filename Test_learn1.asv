@@ -1,0 +1,10 @@
+alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'; 
+randIdx = randperm(length(alphabet), 4); 
+randomLetters = alphabet(randIdx);
+for i=1:100
+   randomLetters = alphabet(randIdx);
+end
+alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'; 
+
+
+disp(randomLetters); % Example output: 'qwer' (will vary each time)
