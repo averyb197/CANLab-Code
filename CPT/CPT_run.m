@@ -1,10 +1,10 @@
-%Setting Up Psychtoolbox to run experimentl
+%Setting Up Psychtoolbox to run experiment    
 sca;
 close all;
 clear;
 clc;
 
-Screen('Preference', 'SkipSyncTests', 0);
+Screen('Preference', 'SkipSyncTests', 1);
 screenNumber=max(Screen('Screens'));
 
 %Gathering Demographic info (need to figure otu what we want to store, all going to eventually go into a combined code line)
@@ -13,20 +13,36 @@ screenNumber=max(Screen('Screens'));
 %Define colors and stimulus list
 white = [255 255 255];
 black = [0 0 0];
+trials=50;
+
 stimuli =char(readcell('CPT_List.xlsx'));
-randIdx = randperm(150, 3);
+length_stim=length(stimuli);
+randIdx = randperm(length_stim, trials);
 responses = zeros(1, length(randIdx));
 response_time = zeros(1, length(randIdx));
 response_check = zeros(1, length(randIdx));
+
+%Response Variables for Mind Wandering Probes
+frequency=10;
+amt_probe= trials/frequency;
+probe_response=zeros(1, amt_probe);
+probe_index = 1;
+prompt = ['On a Scale from 1-10, how focused were you on the task? \n' ...
+    '(5 very focused, 1 unfocused):'];
 
 %Defining time limit
 timeout = 1;
 
 %Defining Screen Dimensions and font size
-w=Screen('OpenWindow', screenNumber, black);
+w=Screen('OpenWindow', 1, black);
 Screen('TextSize',w, 50);
 
-DrawFormattedText(w, 'Press Space if Letter shown is not X', 'center', 'center', white);
+DrawFormattedText(w, ['Press Space if Letter shown is not X\n' ...
+    'Every 50 Trials, a mind wandering probe will be presented\n' ...
+    'For these probes, please answer on a  scale of 1-5\n' ...
+    'how focused you were on the task\n' ...
+    '(5: very focused, 1: not focused at all)' ...
+    ''], 'center', 'center', white);
 Screen('Flip', w);
 KbWait();
 WaitSecs(0.5);
@@ -39,6 +55,9 @@ for i=1:length(randIdx)
     deadline = startTime + timeout;
     keyPressed = NaN;
     timePressed = NaN;
+
+    %Defining blank Text Response
+    typedText = '';
 
     %Present letter to participant for 1 second
     letter = stimuli(randIdx(i));
@@ -78,6 +97,53 @@ for i=1:length(randIdx)
     end
 
     WaitSecs(0.5);  
+
+    i_mod=mod(i, frequency);
+    if i_mod==0
+        while true
+            % Combine prompt and typed text
+            fullLine = [prompt typedText];
+
+            % Draw the combined line
+            DrawFormattedText(w, fullLine, 'center', 'center', [255 255 255]);
+
+            % Show it
+            Screen('Flip', w);
+
+            % Check keyboard
+            [keyIsDown, ~, keyCode] = KbCheck;
+            if keyIsDown
+                keyName = KbName(keyCode);
+
+                % If multiple keys pressed, take first
+                if iscell(keyName)
+                    keyName = keyName{1};
+                end
+
+                % Handle Enter = finish input
+                if strcmpi(keyName, 'Return')
+                    break;
+
+                % Handle Backspace = delete last digit
+                elseif strcmpi(keyName, 'BackSpace') && ~isempty(typedText)
+                    typedText(end) = [];
+
+                % Handle top row numbers, numpad numbers, or shifted symbols like '1!' 
+                elseif ~isempty(regexp(keyName, '^\d', 'once')) || ...        % starts with digit
+                    ~isempty(regexp(keyName, '^numpad\d$', 'once'))        % numpad
+
+                    % Extract just the first digit
+                    digit = regexp(keyName, '\d', 'match');
+                    typedText = [typedText digit{1}];
+                end
+
+                KbReleaseWait; % Prevent repeats
+            end
+        end
+        probe_response(1, probe_index)=str2double(typedText);
+        probe_index = probe_index + 1;
+        WaitSecs(0.5);
+    end
 
     %Crosshair delay of 1 second
     DrawFormattedText(w, '+', 'center', 'center', white);
