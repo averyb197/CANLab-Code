@@ -1,0 +1,27 @@
+% %Setting Up Psychtoolbox to run experiment    
+% sca;
+% close all;
+% clear;
+% clc;
+% 
+% Screen('Preference', 'SkipSyncTests', 1);
+% screenNumber=max(Screen('Screens'));
+% 
+% sca
+
+responses=strings(1, 10);
+
+task_info= ['In this task, you will be asked \n' ...
+    'to list a series of 10 words that you think\n' ...
+    'are not related to one another\n' ...
+    'please use only single words\n' ...
+    'and refrain from using proper nounse\n' ...
+    'press any key to continue'];
+fprintf(task_info);
+KbWait();
+clc
+for i=1:10
+    while true
+        responses(i)=input("Enter word:", "s"); 
+    end
+end
