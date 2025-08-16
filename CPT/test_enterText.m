@@ -1,5 +1,5 @@
 Screen('Preference', 'SkipSyncTests', 1);
-[win, winRect] = Screen('OpenWindow', 1, [0 0 0]); % Black background
+[win, winRect] = Screen('OpenWindow', 0, [0 0 0]); % Black background
 Screen('TextSize', win, 40);
 
 trials=150;
@@ -13,7 +13,7 @@ probe_index = 1;
 
 for i=1:trials
 
-typedText = ''; % Store numeric input
+typedText = ''; % Store numeric input5
 i_mod=mod(i, 50);
     if i_mod==0
         while true
@@ -26,9 +26,7 @@ i_mod=mod(i, 50);
             % Show it
             Screen('Flip', win);
 
-            % Check keyboard5
-            5
-            5
+            % Check keyboard
 
             
             [keyIsDown, ~, keyCode] = KbCheck;
@@ -67,7 +65,7 @@ i_mod=mod(i, 50);
 end
 
 % Show confirmation
-DrawFormattedText(win, ['You typed: ' typedText], 'center', 'center', [255 255 0]);
+DrawFormattedText(win, ['You typed: ' ], 'center', 'center', [255 255 0]);
 Screen('Flip', win);
 WaitSecs(2);
 
