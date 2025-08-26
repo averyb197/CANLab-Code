@@ -1,4 +1,4 @@
-lplllppppp%Setting Up Psychtoolbox to run experiment
+%Setting Up Psychtoolbox to run experiment
 sca;
 close all;
 clear;
