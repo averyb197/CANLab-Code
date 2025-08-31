@@ -18,14 +18,15 @@ stimuli =char(readcell('CPT_List.xlsx'));
 blocks=3;
 length_block=length(stimuli);
 length_exp=length_block*blocks;
-stim_target = zeros(1, length_exp);
-responses = zeros(1, length_exp);
-response_time = zeros(1, length_exp);
-response_check = zeros(1, length_exp);
+stim_target = zeros(length_exp, 1);
+responses = zeros(length_exp, 1);
+response_time = zeros(length_exp, 1);
+response_check = zeros(length_exp, 1);
+stim_is_target=zeros(length_exp, 1);
 
 %Response Variables for Mind Wandering Probes
 amt_probe = blocks;
-probe_response = zeros(1, amt_probe);
+probe_response = zeros(length_exp, 1);
 prompt = ['On a Scale from 1-5, how focused were you on the task? \n' ...
     '(5 very focused, 1 unfocused):'];
 
@@ -69,9 +70,9 @@ for j=1:blocks
 
         %Check if letter is target
         if letter=='X'
-            isTarget=true;
-            stim_is_target(idx)=isTarget;
+            isTarget=true;   
         end
+        stim_is_target(idx)=isTarget;
 
         %Present Stimuli
         DrawFormattedText(w, letter, 'center', 'center', white);
@@ -152,6 +153,6 @@ for j=1:blocks
     WaitSecs(1);
 end
 
-final_table = table(stim_is_target, responses, response_check, response_time);
+final_table = table(responses, stim_is_target, response_check, response_time, probe_response);
 
 sca
