@@ -1,4 +1,4 @@
-function FullTableRAT = Run_VNFB_RAT_Practice(windowPtr, folder, ID, textColor, bgColor, block, sessiontable, rect)
+function FullTableRAT = Run_VNFB_RAT_Practice(windowPtr, ID, textColor, bgColor, block, sessiontable, rect)
    PsychDefaultSetup(1); 
     Time2Res = 15; % Set the response time limit to 15 seconds
     HideCursor
@@ -18,14 +18,14 @@ function FullTableRAT = Run_VNFB_RAT_Practice(windowPtr, folder, ID, textColor, 
 
     ListenChar(2);
 
-    lib = lsl_loadlib();      
-    info = lsl_streaminfo(lib,'MyMarkerStream','Markers',1,0,'cf_string');
-    outlet = lsl_outlet(info);
-    pause(5);
+    % lib = lsl_loadlib();      
+    % info = lsl_streaminfo(lib,'MyMarkerStream','Markers',1,0,'cf_string');
+    % outlet = lsl_outlet(info);
+    % pause(5);
 
     % Display the instructions
-    image = imread("C:\Users\canla\Documents\NFB_volatility\Volatility_paradigm\RAT_Instructions.jpg");
-    image2 = imread("C:\Users\canla\Documents\NFB_volatility\Volatility_paradigm\RAT_Instructions2.jpg");
+    image = imread("C:\Users\User\OneDrive - Loyola University Chicago\Documents\MATLAB\CANLab-Code\RAT_Instructions.jpg");
+    image2 = imread("C:\Users\User\OneDrive - Loyola University Chicago\Documents\MATLAB\CANLab-Code\RAT_Instructions2.jpg");
     Showimg = Screen('MakeTexture', windowPtr, image);
     Screen(windowPtr, 'DrawTexture', Showimg, [], []);
     Screen('Flip', windowPtr);
@@ -42,19 +42,19 @@ function FullTableRAT = Run_VNFB_RAT_Practice(windowPtr, folder, ID, textColor, 
 
 
     % Start connection for recording
-     lr = tcpip('localhost', 22345);
-     fopen(lr);
-     fprintf(lr, 'select all');
-     fprintf(lr, "update");
-     fprintf(lr, ['filename {root:C:\Users\canla\Documents\NFB_volatility\Data\VNFB_data\raw}' ...
-                 '{task:', char('RAT'), '} ' ...
-                 '{template:%p_%s_%b_%n.xdf} ' ...
-                 '{run:', num2str(block), '}' ...
-                 '{participant:', num2str(ID), '}' ...
-                 '{session:', num2str(sessiontable.Session(1)), '}' ...
-                 '{modality:eeg}']);
-     fprintf(lr, 'start');
-    pause(2);
+    %  lr = tcpip('localhost', 22345);
+    %  fopen(lr);
+    %  fprintf(lr, 'select all');
+    %  fprintf(lr, "update");
+    %  fprintf(lr, ['filename {root:C:\Users\canla\Documents\NFB_volatility\Data\VNFB_data\raw}' ...
+    %              '{task:', char('RAT'), '} ' ...
+    %              '{template:%p_%s_%b_%n.xdf} ' ...
+    %              '{run:', num2str(block), '}' ...
+    %              '{participant:', num2str(ID), '}' ...
+    %              '{session:', num2str(sessiontable.Session(1)), '}' ...
+    %              '{modality:eeg}']);
+    %  fprintf(lr, 'start');
+    % pause(2);
 
     % Initialize full response table
     ResponseTableFull = table();
@@ -75,7 +75,7 @@ function FullTableRAT = Run_VNFB_RAT_Practice(windowPtr, folder, ID, textColor, 
     CurrentWord = char(PromptWordsList(i));
     Screen('TextSize', windowPtr, 56);
     DrawFormattedText(windowPtr, CurrentWord, 'center', promptYPos, [0 150 0]);
-    outlet.push_sample({strcat(CurrentWord,'_shown')});
+    % outlet.push_sample({strcat(CurrentWord,'_shown')});
    % Screen('Flip', windowPtr);  % Flip to show the prompt word
     ExTime.StartPromptWord(i) = GetSecs();
 
@@ -85,13 +85,13 @@ function FullTableRAT = Run_VNFB_RAT_Practice(windowPtr, folder, ID, textColor, 
     ResponseTable.StartTime(1) = GetSecs();
 
     % Use GetEchoStringNFB for input with the prompt word displayed
-    ResponseTable.Response(1) = GetEchoStringNFB(windowPtr, 'Enter answer:', 25, ((rect(4) - rect(2)) / 2), textColor, bgColor, ExTime.StartPromptWord(i), Time2Res);
-
+    % ResponseTable.Response(1) = GetEchoStringNFB(windowPtr, 'Enter answer:', 25, ((rect(4) - rect(2)) / 2), textColor, bgColor, ExTime.StartPromptWord(i), Time2Res);
+    ResponseTable.Response(1) = GetEchoString(windowPtr, 'Enter answer:', 25, ((rect(4) - rect(2)) / 2), textColor, bgColor, [], Time2Res);
     % Store response and timing
     ResponseTable.EndTime(1) = GetSecs();
     ResponseTable.RT(1) = ResponseTable.EndTime(1) - ResponseTable.StartTime(1);
     ResponseTable.Tsequence(1) = ResponseTable.EndTime(1) - ExTime.StartPromptWord(i);
-    outlet.push_sample({strcat(CurrentWord,'_answered')});
+    % outlet.push_sample({strcat(CurrentWord,'_answered')});
 
         % Clear the screen after capturing the response
         Screen('FillRect', windowPtr, bgColor); % Clear all text by filling the screen with the background color
@@ -136,10 +136,10 @@ function FullTableRAT = Run_VNFB_RAT_Practice(windowPtr, folder, ID, textColor, 
 end
 
     % Stop recording
-     fprintf(lr, 'stop');
+     % fprintf(lr, 'stop');
 
     % Save the responses to an output file
-    FileName = [folder, 'Sub', char(num2str(ID)), '_NFB', char(num2str(block-1)), '_RAT_Practice_ResponseTable.xlsx'];
+    % FileName = [folder, 'Sub', char(num2str(ID)), '_NFB', char(num2str(block-1)), '_RAT_Practice_ResponseTable.xlsx'];
    % writetable(ResponseTableFull, FileName, 'FileType', 'spreadsheet');
 
     % End screen message

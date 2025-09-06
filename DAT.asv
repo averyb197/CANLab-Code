@@ -1,5 +1,4 @@
-%Need to fix entering infols
-
+%Need to fix entering info
 %Setting Up Psychtoolbox to run experiment    
 sca;
 close all;

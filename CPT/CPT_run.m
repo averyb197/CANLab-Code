@@ -1,7 +1,9 @@
+
 %Setting Up Psychtoolbox to run experiment    
 sca;
 close all;
 clear;
+rng("default");
 clc;
 
 Screen('Preference', 'SkipSyncTests', 1);
@@ -11,11 +13,11 @@ screenNumber=max(Screen('Screens'));
 %ID=input('Enter Participant ID: ','s');
 
 %Define colors and stimulus list
-white = [255 255 255];
+text_color = [255 255 255];
 black = [0 0 0];
 
 stimuli =char(readcell('CPT_List.xlsx'));
-blocks=3;
+blocks=1;
 length_block=length(stimuli);
 length_exp=length_block*blocks;
 stim_target = zeros(length_exp, 1);
@@ -27,14 +29,15 @@ stim_is_target=zeros(length_exp, 1);
 %Response Variables for Mind Wandering Probes
 amt_probe = blocks;
 probe_response = zeros(length_exp, 1);
-prompt = ['On a Scale from 1-5, how focused were you on the task? \n' ...
-    '(5 very focused, 1 unfocused):'];
+prompt1 = 'On a Scale from 1-5, how focused were you on the task?';
+prompt2 = '(5 very focused, 1 unfocused):';
 
 %Defining time limit
 timeout = 0.75;
 
 %Defining Screen Dimensions and font size
-w=Screen('OpenWindow', screenNumber, black);
+[w, winRect] = Screen('OpenWindow', screenNumber, black);
+[xCenter, yCenter] = RectCenter(winRect);
 Screen('TextSize',w, 50);
 
 DrawFormattedText(w, ['Press Space if Letter shown is not X\n' ...
@@ -43,7 +46,7 @@ DrawFormattedText(w, ['Press Space if Letter shown is not X\n' ...
     'how focused you were on the task\n' ...
     '(5: very focused, 1: not focused at all)\n' ...
     'Press any key to continue' ...
-    ''], 'center', 'center', white);
+    ''], 'center', 'center', text_color);
 Screen('Flip', w);
 KbWait();
 WaitSecs(0.5);
@@ -52,7 +55,7 @@ for j=1:blocks
     randIdx = randperm(length_block, length_block);
     for i=1:length(randIdx)
         %Crosshair delay of 1 second
-        DrawFormattedText(w, '+', 'center', 'center', white);
+        DrawFormattedText(w, '+', 'center', 'center', text_color);
         Screen('Flip', w);
         WaitSecs(1);
 
@@ -75,7 +78,7 @@ for j=1:blocks
         stim_is_target(idx)=isTarget;
 
         %Present Stimuli
-        DrawFormattedText(w, letter, 'center', 'center', white);
+        DrawFormattedText(w, letter, 'center', 'center', text_color);
         Screen('Flip', w);
 
         %Waiting for a response, deadline set to 750 ms
@@ -106,49 +109,16 @@ for j=1:blocks
         end
     end
 
-    WaitSecs(0.5);  
-    while true
-            %Present Mind Probe
-            fullLine = [prompt typedText];
-            DrawFormattedText(w, fullLine, 'center', 'center', [255 255 255]);
-            Screen('Flip', w);
-
-            % Check keyboard
-            [keyIsDown, ~, keyCode] = KbCheck;
-            if keyIsDown
-                keyName = KbName(keyCode);
-
-                % If multiple keys pressed, take first
-                if iscell(keyName)
-                    keyName = keyName{1};
-                end
-
-                % Handle Enter = finish input
-                if strcmpi(keyName, 'Return')
-                    break;
-
-                % Handle Backspace = delete last digit
-                elseif strcmpi(keyName, 'BackSpace') && ~isempty(typedText)
-                    typedText(end) = [];
-
-                % Handle top row numbers, numpad numbers, or shifted symbols like '1!' 
-                elseif ~isempty(regexp(keyName, '^\d', 'once')) || ...        % starts with digit
-                    ~isempty(regexp(keyName, '^numpad\d$', 'once'))        % numpad
-
-                    % Extract just the first digit
-                    digit = regexp(keyName, '\d', 'match');
-                    typedText = [typedText digit{1}];
-                end
-
-                KbReleaseWait; % Prevent repeats
-            end
-    end
+    WaitSecs(0.5); 
+    DrawFormattedText(w, prompt1, 'center', 'center', text_color);
+    typedText= GetEchoString(w,prompt2, xCenter-325, winRect(4)*0.55, text_color);
+    Screen('Flip', w);
     probe_response(1, j)=str2double(typedText);
     WaitSecs(0.5);
   
 
     %Crosshair delay of 1 second
-    DrawFormattedText(w, '+', 'center', 'center', white);
+    DrawFormattedText(w, '+', 'center', 'center', text_color);
     Screen('Flip', w);
     WaitSecs(1);
 end

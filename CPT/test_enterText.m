@@ -1,4 +1,15 @@
 Screen('Preference', 'SkipSyncTests', 1);
+PsychDefaultSetup(1); 
+Time2Res = 90;
+%set fixation jitter
+permtarget=linspace(3,5,3);
+randtarget=randperm(numel(permtarget))';
+for i=1:length(permtarget)
+    JitterDist(1,i)=permtarget(randtarget(i,1));
+    end2
+    2
+    2
+    
 [win, winRect] = Screen('OpenWindow', 0, [0 0 0]); % Black background
 Screen('TextSize', win, 40);
 

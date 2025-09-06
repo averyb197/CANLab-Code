@@ -1,4 +1,4 @@
-function FullTableAUT = Run_VNFBAUT_Task(windowPtr, ID,textColor,bgColor,block,sessiontable, rect)
+function FullTableAUT = Run_VNFBAUT_Task(ID,textColor,bgColor,block,sessiontable)
 
 sca;
 close all;
@@ -13,6 +13,7 @@ for i=1:length(permtarget)
     JitterDist(1,i)=permtarget(randtarget(i,1));
 end
 
+[windowPtr,rect]=Screen('OpenWindow',0,[],[]);
 %Find today's session   
 %PromptWordsList = transpose(StimOrderTable{Session+1,11:13});
 %PromptWordsList = transpose(sessiontable{block+1,12:14});
@@ -133,8 +134,7 @@ for i = 1:size(PromptWordsList,1) % height(PromptWordsList)%length(PromptWordsLi
         % outlet.push_sample({strcat(CurrentWord, num2str(num))});
         
         ResponseTable.StartTime(CountResponses) = GetSecs();
-        %ResponseTable.Response(CountResponses) = GetEchoStringNFB(windowPtr, 'Enter answer:', 25, ((rect(4) - rect(2)) / 2), textColor, bgColor, ExTime.StartPromptWord(i), Time2Res);
-        ResponseTable.Response(CountResponses) = GetEchoString(windowPtr,'Enter use: ', 25, ((rect(4)-rect(2))/2), textColor, bgColor, [], Time2Res);
+        ResponseTable.Response(CountResponses) = GetEchoString(windowPtr,'Enter use: ', 25, ((rect(4)-rect(2))/2), textColor, bgColor, ExTime.StartPromptWord(i), Time2Res);
         ResponseTable.EndTime(CountResponses) = GetSecs();
         ResponseTable.RT(CountResponses) = ResponseTable.EndTime(CountResponses)-ResponseTable.StartTime(CountResponses);
         ResponseTable.Tsequence(CountResponses) = ResponseTable.EndTime(CountResponses) - ExTime.StartPromptWord(i); 

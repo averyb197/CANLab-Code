@@ -1,4 +1,5 @@
-function FullTableAUT = Run_VNFBAUT_Practice(windowPtr,folder,ID,textColor,bgColor,block,sessiontable, rect)
+function FullTableAUT = Run_VNFBAUT_Practice(windowPtr,ID,textColor,bgColor,block,sessiontable, rect)
+%Add folder into all tasks soon
 PsychDefaultSetup(1); 
 Time2Res = 90;
 %set fixation jitter
@@ -37,15 +38,15 @@ Screen('TextSize', windowPtr, 36);
 task = 'AUTPrac';
 session = sessiontable.Session(1);
 
-lib = lsl_loadlib();      
-info = lsl_streaminfo(lib,'MyMarkerStream','Markers',1,0,'cf_string');
-outlet = lsl_outlet(info);
-pause(5);
+% lib = lsl_loadlib();      
+% info = lsl_streaminfo(lib,'MyMarkerStream','Markers',1,0,'cf_string');
+% outlet = lsl_outlet(info);
+% pause(5);
 
  
 
 
-image = imread("C:\Users\canla\Documents\NFB_volatility\Volatility_paradigm\AUTInstructions.jpg");
+image = imread("C:\Users\User\OneDrive - Loyola University Chicago\Documents\MATLAB\CANLab-Code\AUTInstructions.jpg");
 %image = imread("/Users/dannyholzman/Library/CloudStorage/OneDrive-Personal/Documents/NFB/AUTInstructions.jpg");
 Showimg = Screen('MakeTexture',windowPtr,image);
 % Draw 'CurrentImage', centered in the display windowPtr:
@@ -63,22 +64,22 @@ ExTime.InsStart = GetSecs();
 KbWait([], 3);
 
            
-lr = tcpip('localhost', 22345);
-fopen(lr)
-fprintf(lr, 'select all');
-fprintf(lr, "update");
-idnum = sessiontable.SN(1);
-
-     fprintf(lr, ['filename {root:C:\Users\canla\Documents\NFB_volatility\Data\VNFB_data\raw}' ...
-            '{task:',char(task),'} ' ...
-            '{template:%p_%s_%b_%n.xdf} '...
-            '{run:',num2str(block),'}'...
-            '{participant:',num2str(idnum),'}'...
-            '{session:', num2str(session), '}'...
-            '{modality:eeg}']); 
-            fprintf(lr, 'start');
-
-pause(2);
+% lr = tcpip('localhost', 22345);
+% fopen(lr)
+% fprintf(lr, 'select all');
+% fprintf(lr, "update");
+% idnum = sessiontable.SN(1);
+% 
+%      fprintf(lr, ['filename {root:C:\Users\canla\Documents\NFB_volatility\Data\VNFB_data\raw}' ...
+%             '{task:',char(task),'} ' ...
+%             '{template:%p_%s_%b_%n.xdf} '...
+%             '{run:',num2str(block),'}'...
+%             '{participant:',num2str(idnum),'}'...
+%             '{session:', num2str(session), '}'...
+%             '{modality:eeg}']); 
+%             fprintf(lr, 'start');
+% 
+% pause(2);
 ExTime.InsEnd = GetSecs();
 for i = 1:size(PromptWordsList,1) % height(PromptWordsList)%length(PromptWordsList)
     num = 1;
@@ -117,12 +118,17 @@ for i = 1:size(PromptWordsList,1) % height(PromptWordsList)%length(PromptWordsLi
         CurrentWord = char(PromptWordsList(i));
     %Condition = 'Think Uses Creative';
     % Draw 'myText', centered in the display windowPtr:
+    %ResponseTable.Response(CountResponses) =
+    %GetEchoString(windowPtr,'Enter use: ', 25, ((rect(4)-rect(2))/2),
+    %textColor, bgColor, ExTime.StartPromptWord(i), Time2Res);
+    %figure out meaning of code, replacing ExTime.StartPromptWord(i) with
+    %[]
        
         DrawFormattedText(windowPtr, CurrentWord, 'center', ((rect(4)-rect(2))/2)-100,[0 150 0]);
-      outlet.push_sample({strcat(CurrentWord, num2str(num))});
+      % outlet.push_sample({strcat(CurrentWord, num2str(num))});
 
         ResponseTable.StartTime(CountResponses) = GetSecs();
-        ResponseTable.Response(CountResponses) = GetEchoStringNFB(windowPtr,'Enter use: ', 25, ((rect(4)-rect(2))/2), textColor, bgColor, ExTime.StartPromptWord(i), Time2Res);
+        ResponseTable.Response(CountResponses) = GetEchoString(windowPtr,'Enter use: ', 25, ((rect(4)-rect(2))/2), textColor, bgColor, [], Time2Res);
         ResponseTable.EndTime(CountResponses) = GetSecs();
         ResponseTable.RT(CountResponses) = ResponseTable.EndTime(CountResponses)-ResponseTable.StartTime(CountResponses);
         ResponseTable.Tsequence(CountResponses) = ResponseTable.EndTime(CountResponses) - ExTime.StartPromptWord(i); 
@@ -164,7 +170,7 @@ for i = 1:size(PromptWordsList,1)
     InstructionLine = ['Choose from the list below what you believe was your most creative response\nto ', char(PromptWordsList(i))  ,'. Type the number. Then hit enter to continue.'];
     DrawFormattedText(windowPtr, InstructionLine, 25,40,textColor);
     
-   outlet.push_sample({strcat(PromptWordsList{i}, '_eval')});
+   % outlet.push_sample({strcat(PromptWordsList{i}, '_eval')});
 
 %     DrawFormattedText(windowPtr, ShortResponseList, 25,60,textColor);
 %     Screen('Flip', windowPtr);
@@ -224,7 +230,7 @@ Screen('Flip', windowPtr);
 %ArrangeTimes make table
 ListenChar(0);
 
-fprintf(lr, 'stop');
+% fprintf(lr, 'stop');
 
 %prepare XL table
 TimeTable = table(ExTime.FixStart',ExTime.FixEnd',ExTime.StartPromptWord',ExTime.EndPromptWord','VariableNames',["FixStart","FixEnd",...
@@ -241,7 +247,7 @@ VisitNtable = repmat(block,height(PromptWordsList),1);
 PromptWordsListTable = table(IDtable,VisitNtable,PromptWordsList,ResponseText','VariableNames',["ID","BlockN","PromptWord","EvalChoice"]);
 FullTableAUT = [PromptWordsListTable,TimeTable];
 %for task add trial number 1-3 also to function
-FileName = [folder,'Sub',char(num2str(ID)),'_Session',num2str(sessiontable.Session(1)),'_Block',char(sessiontable.Trial(1)),'_AUTPractice_ResponseTable'];
-writetable(ResponseTableFull,FileName,"FileType","spreadsheet");
+% FileName = [folder,'Sub',char(num2str(ID)),'_Session',num2str(sessiontable.Session(1)),'_Block',char(sessiontable.Trial(1)),'_AUTPractice_ResponseTable'];
+% writetable(ResponseTableFull,FileName,"FileType","spreadsheet");
 %FileName = [folder,filesep,'OutputData',filesep,'Sub', num2str(ID),'_VisitN',num2str(Session),'_FullTable'];
 %writetable(FullTableAUT,FileName,'FileType','spreadsheet');
