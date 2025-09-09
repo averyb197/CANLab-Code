@@ -5,14 +5,18 @@ sca;
 close all;
 clear;
 clc;
+PsychDefaultSetup(1);
 
-Screen('Preference', 'SkipSyncTests', 1);
+Screen('Preference', 'SkipSyncTests', 1);-
+
 screenNumber=max(Screen('Screens'));
 
 %Defining Colors and screen window variable
-white = [255 255 255];
-black = [0 0 0];
-w=Screen('OpenWindow', screenNumber, black);
+text_color = [255 255 255];
+bg_color = [0 0 0];
+[windowPtr, rect] = Screen('OpenWindow', screenNumber, bg_color);
+[xCenter, yCenter] = RectCenter(rect);
+Screen('TextSize',windowPtr, 50);
 
 %Preparing Response Matrix, task info, and word prompt
 responses=strings(1, 10);
@@ -25,8 +29,8 @@ task_info= ['In this task, you will be asked \n' ...
 prompt='Enter word: ';
 current_prompt='Current Words: ';
 
-DrawFormattedText(w, task_info, 'center', 'center', white);
-Screen('Flip', w);
+DrawFormattedText(windowPtr, task_info, 'center', 'center', text_color);
+Screen('Flip', windowPtr);
 
 KbWait();
 WaitSecs(0.5);
@@ -37,49 +41,11 @@ for i=1:10
     combine_resp=char(strjoin(responses, ' '));
     current_resp = [current_prompt combine_resp];
 
-
-    typedText = ''; % Store typed characters here
-
-
-    while true
-        % Combine prompt and typed text into one line
-        fullLine = [prompt typedText];
-
-        % Draw everything on one line
-
-        DrawFormattedText(w, fullLine, 'center', 'center', white);
-        DrawFormattedText(w, current_resp, 10, 100, white);
-
-        % Show
-        Screen('Flip', w);
-
-        % Check keyboard
-        [keyIsDown, ~, keyCode] = KbCheck;
-        
-        if keyIsDown
-            keyName = KbName(keyCode);
-
-            if iscell(keyName) % If multiple keys pressed, pick first
-                keyName = keyName{1};
-            end
-
-            % Handle return/enter = finish input
-            if strcmpi(keyName, 'Return')
-                break;
-
-            % Handle backspace
-            elseif strcmpi(keyName, 'BackSpace') && ~isempty(typedText)
-                typedText(end) = [];
-
-            % Handle normal character keys (letters, numbers, symbols)
-            elseif length(keyName) == 1
-                typedText = [typedText keyName];
-            end
-
-            KbReleaseWait; % Prevent double key entries
-        end
-    end
+    DrawFormattedText(windowPtr, current_resp, 10, rect(4)*0.10, text_color);
+    typedText = GetEchoString(windowPtr,prompt, xCenter-325, rect(4)/2, text_color);
+    Screen('Flip', windowPtr);
     responses(i)=typedText;
+    KbReleaseWait;
     WaitSecs(0.5);
 end
 
