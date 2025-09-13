@@ -1,4 +1,4 @@
-function FullTableSS = Run_VNFB_StopSignalIm(task_or_prac, windowPtr, folder, ID, textColor, bgColor, block, sessiontable, rect)
+function FullTableSS = Run_VNFB_StopSignalIm(task_or_prac, windowPtr, ID, textColor, bgColor, block, sessiontable, rect)
     % Stop-Signal Task in MATLAB using Psychtoolbox
     exit = 0;
 
@@ -65,37 +65,37 @@ function FullTableSS = Run_VNFB_StopSignalIm(task_or_prac, windowPtr, folder, ID
     Screen('FillRect', windowPtr, bgColor);
     Screen('Flip', windowPtr);
 
-    lib = lsl_loadlib();      
-    info = lsl_streaminfo(lib,'MyMarkerStream','Markers',1,0,'cf_string');
-    outlet = lsl_outlet(info);
-    pause(5);
+    % lib = lsl_loadlib();      
+    % info = lsl_streaminfo(lib,'MyMarkerStream','Markers',1,0,'cf_string');
+    % outlet = lsl_outlet(info);
+    % pause(5);
 
 
      % Start connection for recording
-     lr = tcpip('localhost', 22345);
-     fopen(lr);
-     fprintf(lr, 'select all');
-     fprintf(lr, "update");
-     if task_or_prac == 0
-         fprintf(lr, ['filename {root:C:\Users\canla\Documents\NFB_volatility\Data\VNFB_data\raw}' ...
-                     '{task:', char('SSPrac'), '} ' ...
-                     '{template:%p_%s_%b_%n.xdf} ' ...
-                     '{run:', num2str(block), '}' ...
-                     '{participant:', num2str(ID), '}' ...
-                     '{session:', num2str(sessiontable.Session(1)), '}' ...
-                     '{modality:eeg}']);
-     else
-                  fprintf(lr, ['filename {root: C:\Users\canla\Documents\NFB_volatility\Data\VNFB_data\raw}' ...
-                     '{task:', char('SS'), '} ' ...
-                     '{template:%p_%s_%b_%n.xdf} ' ...
-                     '{run:', num2str(block), '}' ...
-                     '{participant:', num2str(ID), '}' ...
-                     '{session:', num2str(sessiontable.Session(1)), '}' ...
-                     '{modality:eeg}']);
-     end
-     
-     fprintf(lr, 'start');
-    pause(2);
+    %  lr = tcpip('localhost', 22345);
+    %  fopen(lr);
+    %  fprintf(lr, 'select all');
+    %  fprintf(lr, "update");
+    %  if task_or_prac == 0
+    %      fprintf(lr, ['filename {root:C:\Users\canla\Documents\NFB_volatility\Data\VNFB_data\raw}' ...
+    %                  '{task:', char('SSPrac'), '} ' ...
+    %                  '{template:%p_%s_%b_%n.xdf} ' ...
+    %                  '{run:', num2str(block), '}' ...
+    %                  '{participant:', num2str(ID), '}' ...
+    %                  '{session:', num2str(sessiontable.Session(1)), '}' ...
+    %                  '{modality:eeg}']);
+    %  else
+    %               fprintf(lr, ['filename {root: C:\Users\canla\Documents\NFB_volatility\Data\VNFB_data\raw}' ...
+    %                  '{task:', char('SS'), '} ' ...
+    %                  '{template:%p_%s_%b_%n.xdf} ' ...
+    %                  '{run:', num2str(block), '}' ...
+    %                  '{participant:', num2str(ID), '}' ...
+    %                  '{session:', num2str(sessiontable.Session(1)), '}' ...
+    %                  '{modality:eeg}']);
+    %  end
+    % 
+    %  fprintf(lr, 'start');
+    % pause(2);
 
     % Trial loop
     for t = 1:length(stimuli)
@@ -189,7 +189,7 @@ function FullTableSS = Run_VNFB_StopSignalIm(task_or_prac, windowPtr, folder, ID
     Screen('Flip', windowPtr);
     WaitSecs(1);
 
-    fprintf(lr, 'stop');
+    % fprintf(lr, 'stop');
     if exit == 1
         Screen('CloseAll');
           % Stop recording

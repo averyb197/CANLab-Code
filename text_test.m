@@ -1,6 +1,7 @@
 
 Screen('Preference', 'SkipSyncTests', 1);
-[win, winRect] = Screen('OpenWindow', 1, [0 0 0]); % black background
+[win, winRect] = Screen('OpenWindow', 0 ...
+    , [0 0 0]); % black background
 Screen('TextSize', win, 50);
 [xCenter, yCenter] = RectCenter(winRect);
 

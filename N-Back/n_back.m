@@ -12,13 +12,17 @@ false_alarm=0;
 
 for i = 1:trials
     letter = letters(randperm(15,1));
-    if (letter==back_2 | letter==back_1) total_match = total_match + 1; end
+    if (letter==back_2)
+        total_match = total_match + 1; 
+    end
     disp(letter)
     pause(.5)
     clc
     while true
         res = input('Did you see the same letter in 2 letters ago (y/n)?', 's');
-        if (res=='y' | res=='n') break; end
+        if (res=='y' | res=='n') 
+            break; 
+        end
     end
     clc
     if (res=='y')

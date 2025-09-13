@@ -6,9 +6,7 @@ permtarget=linspace(3,5,3);
 randtarget=randperm(numel(permtarget))';
 for i=1:length(permtarget)
     JitterDist(1,i)=permtarget(randtarget(i,1));
-    end2
-    2
-    2
+end
     
 [win, winRect] = Screen('OpenWindow', 0, [0 0 0]); % Black background
 Screen('TextSize', win, 40);

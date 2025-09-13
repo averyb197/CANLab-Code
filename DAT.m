@@ -1,4 +1,3 @@
-%Need to fix entering infols
 
 %Setting Up Psychtoolbox to run experiment    
 sca;
@@ -7,7 +6,7 @@ clear;
 clc;
 PsychDefaultSetup(1);
 
-Screen('Preference', 'SkipSyncTests', 1);-
+Screen('Preference', 'SkipSyncTests', 1);
 
 screenNumber=max(Screen('Screens'));
 
@@ -16,7 +15,7 @@ text_color = [255 255 255];
 bg_color = [0 0 0];
 [windowPtr, rect] = Screen('OpenWindow', screenNumber, bg_color);
 [xCenter, yCenter] = RectCenter(rect);
-Screen('TextSize',windowPtr, 50);
+% Screen('TextSize',windowPtr, 50);
 
 %Preparing Response Matrix, task info, and word prompt
 responses=strings(1, 10);
@@ -42,11 +41,10 @@ for i=1:10
     current_resp = [current_prompt combine_resp];
 
     DrawFormattedText(windowPtr, current_resp, 10, rect(4)*0.10, text_color);
-    typedText = GetEchoString(windowPtr,prompt, xCenter-325, rect(4)/2, text_color);
+    typedText = GetEchoString(windowPtr,prompt, xCenter-325, rect(4)/2, text_color, bg_color, []);
     Screen('Flip', windowPtr);
     responses(i)=typedText;
     KbReleaseWait;
-    WaitSecs(0.5);
 end
 
 sca

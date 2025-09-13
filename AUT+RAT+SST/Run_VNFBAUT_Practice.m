@@ -46,7 +46,7 @@ session = sessiontable.Session(1);
  
 
 
-image = imread("C:\Users\User\OneDrive - Loyola University Chicago\Documents\MATLAB\CANLab-Code\AUTInstructions.jpg");
+image = imread("C:\Users\User\OneDrive - Loyola University Chicago\Documents\MATLAB\CANLab-Code\AUT+RAT+SST\AUTInstructions.jpg");
 %image = imread("/Users/dannyholzman/Library/CloudStorage/OneDrive-Personal/Documents/NFB/AUTInstructions.jpg");
 Showimg = Screen('MakeTexture',windowPtr,image);
 % Draw 'CurrentImage', centered in the display windowPtr:

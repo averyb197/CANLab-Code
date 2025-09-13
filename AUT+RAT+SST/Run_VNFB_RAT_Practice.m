@@ -24,8 +24,8 @@ function FullTableRAT = Run_VNFB_RAT_Practice(windowPtr, ID, textColor, bgColor,
     % pause(5);
 
     % Display the instructions
-    image = imread("C:\Users\User\OneDrive - Loyola University Chicago\Documents\MATLAB\CANLab-Code\RAT_Instructions.jpg");
-    image2 = imread("C:\Users\User\OneDrive - Loyola University Chicago\Documents\MATLAB\CANLab-Code\RAT_Instructions2.jpg");
+    image = imread("C:\Users\User\OneDrive - Loyola University Chicago\Documents\MATLAB\CANLab-Code\AUT+RAT+SST\RAT_Instructions.jpg");
+    image2 = imread("C:\Users\User\OneDrive - Loyola University Chicago\Documents\MATLAB\CANLab-Code\AUT+RAT+SST\RAT_Instructions2.jpg");
     Showimg = Screen('MakeTexture', windowPtr, image);
     Screen(windowPtr, 'DrawTexture', Showimg, [], []);
     Screen('Flip', windowPtr);

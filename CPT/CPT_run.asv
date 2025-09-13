@@ -65,7 +65,8 @@ for j=1:blocks
         keyPressed = NaN;
         timePressed = NaN;
 
-        %Defining letter, and target values
+        %Defining blank Text Response, letter, and target values
+        typedText = '';
         idx=i+((j-1)*50);
         letter = stimuli(randIdx(i));
         isTarget = false; 
@@ -110,9 +111,9 @@ for j=1:blocks
 
     WaitSecs(0.5); 
     DrawFormattedText(w, prompt1, 'center', 'center', text_color);
-    typedText= GetEchoString(w,prompt2, xCenter-325, winRect(4)*0.55, text_color, black, [], 100);
+    typedText= GetEchoString(w,prompt2, xCenter-325, winRect(4)*0.55, text_color, b);
     Screen('Flip', w);
-    probe_response(j, 1)=str2double(typedText);
+    probe_response(1, j)=str2double(typedText);
     WaitSecs(0.5);
   
 

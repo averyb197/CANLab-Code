@@ -59,7 +59,7 @@ idnum = sessiontable.SN(1);
 
 
 
-image = imread("C:\Users\User\OneDrive - Loyola University Chicago\Documents\MATLAB\CANLab-Code\AUTInstructions.jpg");
+image = imread("C:\Users\User\OneDrive - Loyola University Chicago\Documents\MATLAB\CANLab-Code\AUT+RAT+SST\AUTInstructions.jpg");
 Showimg = Screen('MakeTexture',windowPtr,image);
 % Draw 'CurrentImage', centered in the display windowPtr:
 Screen(windowPtr, 'DrawTexture', Showimg, [], []);
