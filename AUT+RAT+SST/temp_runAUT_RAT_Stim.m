@@ -27,6 +27,15 @@ end
 answer(3,1) = input('What session number? (e.g. 1 = Day 1, 2 = Day 2, 3 = Day 3): ', 's');
 session = str2num(answer(3,1));
 
+
+task_run = input(['What Task Would you like to run?\n' ...
+    '1: AUT Practice\n' ...
+    '2: AUT Full\n' ...
+    '3: RAT Practice\n' ...
+    '4: RAT Full\n' ...
+    '5: Stop Signal\n' ...
+    'Enter Number: ']);
+
 ID = answer(1,1);
 id = ID;
 idx = StimOrderTable.SN == str2num(ID);
@@ -41,15 +50,27 @@ selectedCondition = sessiontable.Condition{1};
 sessionNum = char(answer(3,1));
 
 block = CountNFB+1;
-task_or_prac=0;
 
 [windowPtr,rect]=Screen('OpenWindow',0,[],[]);
 %AUT works, AUT prac works, RAT prac works,
-
-%Run_VNFBAUT_Task(windowPtr, ID, textColor, bgColor, block, sessiontable, rect);
-% Run_NFB_RAT_Task(windowPtr, ID, textColor, bgColor, block, sessiontable, rect);
-Run_VNFBAUT_Practice(windowPtr,ID,textColor,bgColor,block, sessiontable, rect);
-% Run_VNFB_RAT_Practice(windowPtr, ID, textColor, bgColor, block, sessiontable, rect)
-% Run_VNFB_StopSignalIm(task_or_prac, windowPtr, ID, textColor, bgColor, block, sessiontable, rect);
+if task_run == 1
+    Run_VNFBAUT_Practice(windowPtr,ID,textColor,bgColor,block, sessiontable, rect);
+elseif task_run == 2
+    Run_VNFBAUT_Task(windowPtr, ID, textColor, bgColor, block, sessiontable, rect);
+elseif task_run == 3
+    Run_VNFB_RAT_Practice(windowPtr, ID, textColor, bgColor, block, sessiontable, rect);
+elseif task_run == 4
+    Run_NFB_RAT_Task(windowPtr, ID, textColor, bgColor, block, sessiontable, rect);
+elseif task_run == 5
+    while true
+        task_or_prac = input(['Practice (0) or Full (1)']);
+        if (task_or_prac == 0 | task_or_prac == 1)
+            break;
+        else
+            fprintf('Incorrect number, please try again\n');
+        end
+    end
+    Run_VNFB_StopSignalIm(task_or_prac, windowPtr, ID, textColor, bgColor, block, sessiontable, rect);
+end
 
 sca;

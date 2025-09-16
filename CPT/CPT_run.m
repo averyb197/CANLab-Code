@@ -1,4 +1,3 @@
-
 %Setting Up Psychtoolbox to run experiment    
 sca;
 close all;
@@ -24,7 +23,8 @@ stim_target = zeros(length_exp, 1);
 responses = zeros(length_exp, 1);
 response_time = zeros(length_exp, 1);
 response_check = zeros(length_exp, 1);
-stim_is_target=zeros(length_exp, 1);
+stim_is_target = zeros(length_exp, 1);
+letters_exp = strings(length_exp, 1);
 
 %Response Variables for Mind Wandering Probes
 amt_probe = blocks;
@@ -68,6 +68,7 @@ for j=1:blocks
         %Defining letter, and target values
         idx=i+((j-1)*50);
         letter = stimuli(randIdx(i));
+        letters_exp(idx) = letter;
         isTarget = false; 
 
         %Check if letter is target
@@ -122,6 +123,6 @@ for j=1:blocks
     WaitSecs(1);
 end
 
-final_table = table(responses, stim_is_target, response_check, response_time, probe_response);
+final_table = table(responses, letters_exp, stim_is_target, response_check, response_time, probe_response);
 
 sca

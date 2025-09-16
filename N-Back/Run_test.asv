@@ -1,0 +1,15 @@
+stimuli_full = readtable('N-Back_Stim_List.xlsx',"ReadVariableNames", true);
+height_list = height(stimuli_full);
+amt_list = width(stimuli_full);
+stimuli = blanks(height_list*amt_list);
+
+
+randIdx = randperm(amt_list, amt_list);
+
+for i = 1:amt_list
+    start_block = 1 + ((i - 1) * height_list);
+    end_block = i * height_list;
+    list_block = stimuli_full (:, randIdx(i));
+    ColumnName=
+    stimuli(start_block : end_block) = string(list_block);
+end

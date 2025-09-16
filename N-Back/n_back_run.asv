@@ -1,0 +1,128 @@
+%Setting Up Psychtoolbox to run experiment, this is N-Back now
+sca;
+close all;
+clear;
+clc;
+
+Screen('Preference', 'SkipSyncTests', 1);
+screenNumber = max(Screen('Screens'));
+
+%Define colors
+text_color = [255 255 255];
+bg_color= [0 0 0];
+
+%Gather Stim List
+stimuli_full = readtable('N-Back_Stim_List.xlsx',"ReadVariableNames", true);
+length_block = height(stimuli_full);
+blocks = width(stimuli_full);
+stimuli_block = blanks(length_block);
+randList = randperm(blocks, blocks);
+length_exp = length_block*blocks;
+
+%how far back participant should remember;
+x_back = 2;
+n_back_target = '';
+prev_block1 = '';
+prev_block2 = '';
+
+%Restrict keys to A, L, or P
+% targetKeys = [KbName('A'), KbName('L'), KbName('P')];
+% RestrictKeysForKbCheck(targetKeys);
+responses = zeros(length_exp, 1);
+response_check = zeros(length_exp, 1);
+trial_start= zeros(length_exp, 1);
+trial_end = zeros(length_exp, 1);
+response_time = zeros(length_exp, 1);
+stimuli_store = strings(length_exp, 1);
+n_back_store = strings(length_exp, 1);
+
+%Defining Screen Dimensions and font size
+[windowPtr, rect] = Screen('OpenWindow', screenNumber, bg_color);
+
+%Text with Instructions
+Screen('TextSize', windowPtr, 32);
+instructions = ['In this task,\n' ...
+    'you will be presented a series of letters.\n' ...
+    'For each letter presented, you will be asked\n' ...
+    'whether the present letter matched the letter\n' ...
+    'that was presented two letters before.\n' ...
+    'For example: ABA, the two As would match\n' ...
+    'If the letters match, press a.\n' ...
+    'If the letters do not match, press l\n' ...
+    'Press any key to continue'];
+DrawFormattedText(windowPtr, instructions, 'center', 'center', text_color);
+Screen('Flip', windowPtr);
+KbWait();
+WaitSecs(0.5);
+
+%Crosshair pause time
+Screen('TextSize', windowPtr, 50);
+DrawFormattedText(windowPtr, '+', 'center', 'center', text_color);
+Screen('Flip', windowPtr);
+WaitSecs(3);
+
+%Trial Start
+for i = 1:blocks
+    stimuli_block = stimuli_full {:, randList(i)};
+    stimuli_block = char(list_block);
+    for j= 1:length_block
+        %Defining Index, Stimuli, and N-Back Comparison
+        idx = j+((i-1)*length_block);
+        letter = stim_block(j);
+        
+        if idx > 2
+            if j == 1
+                n_back_target = prev_block1;
+            elseif j == 2
+                n_back_target = prev_block2;
+            else
+                n_back_target = stim_block(j-2);
+            end
+        end
+        stimuli_store(idx) = letter;
+        n_back_store(idx) = n_back_target;
+
+        DrawFormattedText(windowPtr, letter, 'center', 'center', text_color);
+        Screen('Flip', windowPtr);
+        WaitSecs(0.75);  
+        
+        %Crosshair pause time
+        DrawFormattedText(windowPtr, '+', 'center', 'center', text_color);
+        Screen('Flip', windowPtr);
+        WaitSecs(0.5);
+
+        %Prompt for response
+        DrawFormattedText(windowPtr, ['Did you see the same letter 2 letters ago?\n' ...
+            'a=yes, l=no'], 'center', 'center', text_color);
+        Screen('Flip', windowPtr);
+        trial_start(idx) = GetSecs();
+        [secs, keys] = KbWait();
+        trial_end(idx) = GetSecs();
+        response_time(idx) = trial_start(idx)-trial_end(idx);
+        responses(idx) = find(keys);
+        KbReleaseWait;
+
+        %Evaluating trial
+        if letter == n_back_target
+            if responses(idx) == 65
+                response_check(idx) = 1;
+            else
+                response_check(idx) = 0;
+            end
+        else
+            if responses(idx) == 76
+                response_check(idx) = 1;
+            else
+                response_check(idx) = 0;
+            end
+        end
+    end 
+    prev_block1 = stim_block(length_block-1);
+    prev_block2 = stim_block(length_block);
+end
+%a=65, l=76
+%a=yes, l=no
+
+final_table = table(responses, stimuli_store, n_back_store, response_check, trial_start, trial_end, response_time);
+
+sca;
